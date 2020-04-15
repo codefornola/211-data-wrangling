@@ -20,7 +20,7 @@ of each project, which is helpful when working with mulitple projects with diffe
 For macOS or Linux
 ```
 python3 -m venv .venv
-source env/bin/activate
+source .venv/bin/activate
 ```
 
 For Windows
