@@ -45,8 +45,9 @@ pip install -r requirements.txt
 
 ## Running the scripts
 
-TBD - but probably something like this:
+TBD - but probably something like this but eventually specifying input and output files 
 
 ```
-python cleanup /path/to/file1.xlsx /path/to/file2.xlsx
+python cleanup_keep_calm_with_covid.py
+python cleanup_all_covid_calls.py
 ```
