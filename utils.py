@@ -1,7 +1,17 @@
+import logging
+import os
 import pandas as pd
 from uszipcode import SearchEngine
 
 search = SearchEngine(simple_zipcode=True)
+
+
+def write_output_file(df, filename, sheet_name="codefornola cleaned"):
+    if filename.startswith("data") and not os.path.exists("data"):
+        logging.debug("Creating data directory")
+        os.makedirs("data")
+    logging.debug(f"Writing sheet '{sheet_name}' into '{filename}'")
+    df.to_excel(filename)
 
 
 def get_lat(zipcode):
@@ -21,6 +31,7 @@ def get_lng(zipcode):
 
 
 def explode_needs(df, need_column):
+    logging.debug(f"exploding needs into {need_column}")
     df["tmp_needs"] = df[need_column].str.split(";")
     df = df.explode("tmp_needs")
     df.drop(columns=[need_column], inplace=True)

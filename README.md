@@ -45,9 +45,16 @@ pip install -r requirements.txt
 
 ## Running the scripts
 
-TBD - but probably something like this but eventually specifying input and output files 
+The basic format is `python cleanup.py <command> --input <path/to/input.xlsx>` 
+
+For example:
+```
+python cleanup.py all-covid-calls --input "Data from 4.2.20 Fake Data.xlsx"
+python cleanup.py --debug keep-calm-with-covid --input "Data from 4.2.20 Fake Data.xlsx"  --sheetname "Uncleaned data type 2 VIA LINK"
+```
+
+If you want to see the basic usage you can run `python cleanup.py` and for a specifc command you can use the `--help` flag
 
 ```
-python cleanup_keep_calm_with_covid.py
-python cleanup_all_covid_calls.py
+python cleanup.py all-covid-calls --help
 ```

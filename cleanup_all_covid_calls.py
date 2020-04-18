@@ -1,9 +1,15 @@
 import pandas as pd
 import numpy as np
 from datetime import datetime
-from utils import explode_needs, get_lat, get_lng, replacements
-pd.options.mode.chained_assignment = None
+from utils import (
+    explode_needs,
+    get_lat,
+    get_lng,
+    replacements,
+    write_output_file,
+)
 
+pd.options.mode.chained_assignment = None
 
 
 def cleanup(dfs):
@@ -121,6 +127,4 @@ if __name__ == "__main__":
     dfs = pd.read_excel(file, sheet_name=None)
 
     df = cleanup(dfs)
-
-    # write out spreadsheet
-    df.to_excel("data/all_covid_calls_cleaned.xlsx", sheet_name="codefornola cleaned")
+    write_output_file(df, "data/all_covid_calls_cleaned.xlsx")

@@ -3,6 +3,26 @@ import numpy as np
 from datetime import datetime
 from utils import explode_needs, get_lat, get_lng, replacements
 
+CONVERTERS = {
+    "Concerns/Needs  - Disaster Services ": str,
+    "Concerns/Needs  - Domestic Abuse/IPV": str,
+    "Concerns/Needs  - Early Childhood Education ": str,
+    "Concerns/Needs  - Education/ Employment ": str,
+    "Concerns/Needs  - Environmental Quality & Prtcn ": str,
+    "Concerns/Needs  - Health Care ": str,
+    "Concerns/Needs  - Interpersonal": str,
+    "Concerns/Needs  - Mental Health": str,
+    "Concerns/Needs  - Mental Health Concerns": str,
+    "Concerns/Needs  - Organizational Development": str,
+    "Concerns/Needs  - Other ": str,
+    "Concerns/Needs  - Other Community Services": str,
+    "Concerns/Needs  - Protective Service/Abuse": str,
+    "Concerns/Needs  - Public Asst & Social Insurance": str,
+    "Concerns/Needs  - Relationship Concerns / Issues ": str,
+    "Concerns/Needs  - Self-Harm": str,
+    "Concerns/Needs  - Sexuality": str,
+}
+
 
 def cleanup(df):
     ### Cleanup for Keeping Calm with COVID dashboard
@@ -76,27 +96,8 @@ def cleanup(df):
 
 if __name__ == "__main__":
     file = "Data from 4.2.20 Fake Data.xlsx"
-    converters = {
-        "Concerns/Needs  - Disaster Services ": str,
-        "Concerns/Needs  - Domestic Abuse/IPV": str,
-        "Concerns/Needs  - Early Childhood Education ": str,
-        "Concerns/Needs  - Education/ Employment ": str,
-        "Concerns/Needs  - Environmental Quality & Prtcn ": str,
-        "Concerns/Needs  - Health Care ": str,
-        "Concerns/Needs  - Interpersonal": str,
-        "Concerns/Needs  - Mental Health": str,
-        "Concerns/Needs  - Mental Health Concerns": str,
-        "Concerns/Needs  - Organizational Development": str,
-        "Concerns/Needs  - Other ": str,
-        "Concerns/Needs  - Other Community Services": str,
-        "Concerns/Needs  - Protective Service/Abuse": str,
-        "Concerns/Needs  - Public Asst & Social Insurance": str,
-        "Concerns/Needs  - Relationship Concerns / Issues ": str,
-        "Concerns/Needs  - Self-Harm": str,
-        "Concerns/Needs  - Sexuality": str,
-    }
     df = pd.read_excel(
-        file, sheet_name="Uncleaned data type 2 VIA LINK", converters=converters
+        file, sheet_name="Uncleaned data type 2 VIA LINK", converters=CONVERTERS
     )
     df = cleanup(df)
     df.to_excel(
