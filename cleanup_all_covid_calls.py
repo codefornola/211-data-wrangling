@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 from datetime import datetime
 from utils import explode_needs, get_lat, get_lng, replacements
+pd.options.mode.chained_assignment = None
+
 
 
 def cleanup(dfs):
@@ -107,7 +109,7 @@ def cleanup(dfs):
     master_df[cn] = master_df[cn].str.strip()
     master_df = master_df[master_df[cn] != "Hangup / Wrong Number"]
     master_df = master_df[master_df[cn] != "Hangup / Wrong #"]
-    master_df = master_df.replace(to_replace=replacements, value=None, inplace=True)
+    master_df.replace(to_replace=replacements, value=None, inplace=True)
 
     return master_df
 
