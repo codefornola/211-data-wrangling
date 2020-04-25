@@ -1,4 +1,5 @@
 import logging
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
@@ -29,7 +30,12 @@ def cleanup(ctx, debug):
 
 @cleanup.command()
 @click.pass_context
-@click.option("--input", "infile", required=True, help="Path to the input spreadsheet (.xlsx file)")
+@click.option(
+    "--input",
+    "infile",
+    required=True,
+    help="Path to the input spreadsheet (.xlsx file)",
+)
 @click.option("--sheetname", default=None, help="Name of the sheet to use")
 @click.option(
     "--output",
@@ -50,7 +56,12 @@ def all_covid_calls(ctx, infile, sheetname, output):
 
 @cleanup.command()
 @click.pass_context
-@click.option("--input", "infile", required=True, help="Path to the input spreadsheet (.xlsx file)")
+@click.option(
+    "--input",
+    "infile",
+    required=True,
+    help="Path to the input spreadsheet (.xlsx file)",
+)
 @click.option("--sheetname", required=True, help="Name of the sheet to use")
 @click.option(
     "--output",
