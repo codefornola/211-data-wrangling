@@ -40,7 +40,7 @@ def explode_needs(df, need_column):
 
 
 replacements = {
-    "†": "For some reason this cross mark is showing up in some of the entries, so just removing it",
+    "†": "",
     "Employment": "Employment Services",
     "Food": "Food/Meals",
     "Food/Meal": "Food/Meals",
