@@ -118,13 +118,3 @@ def cleanup(dfs):
     master_df.replace(to_replace=replacements, value=None, inplace=True)
 
     return master_df
-
-
-if __name__ == "__main__":
-    file = "Data from 4.2.20 Fake Data.xlsx"
-
-    # read all sheets, returns a dict of dataframes
-    dfs = pd.read_excel(file, sheet_name=None)
-
-    df = cleanup(dfs)
-    write_output_file(df, "data/all_covid_calls_cleaned.xlsx")

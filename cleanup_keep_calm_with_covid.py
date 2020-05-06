@@ -92,14 +92,3 @@ def cleanup(df):
     df["Longitude"] = df["PostalCode"].apply(get_lng)
 
     return df
-
-
-if __name__ == "__main__":
-    file = "Data from 4.2.20 Fake Data.xlsx"
-    df = pd.read_excel(
-        file, sheet_name="Uncleaned data type 2 VIA LINK", converters=CONVERTERS
-    )
-    df = cleanup(df)
-    df.to_excel(
-        "data/keep_calm_with_covid_cleaned.xlsx", sheet_name="codefornola cleaned"
-    )
