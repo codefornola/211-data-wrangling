@@ -57,23 +57,22 @@ def all_covid_calls(ctx, infile, sheetname, output):
 @cleanup.command()
 @click.pass_context
 @click.option(
-    "--input",
-    "infile",
-    required=True,
-    help="Path to the input spreadsheet (.xlsx file)",
+    "--input", "infile", required=True, help="Path to the input csv file",
 )
-@click.option("--sheetname", required=True, help="Name of the sheet to use")
 @click.option(
     "--output",
     default="data/keep_calm_with_covid_cleaned.xlsx",
     help="Path to the output spreadsheet (cleaned .xlsx file)",
 )
-def keep_calm_with_covid(ctx, infile, sheetname, output):
+def keep_calm_with_covid(ctx, infile, output):
     if ctx.obj["DEBUG"]:
         logging.getLogger().setLevel(logging.DEBUG)
         logging.debug("Running in debug mode")
     logging.debug(f"Reading input file '{infile}'")
-    df = pd.read_excel(infile, sheet_name=sheetname, converters=CONVERTERS)
+    df = pd.read_csv(infile, encoding="ISO-8859-1", converters=CONVERTERS)
+    columns = df.iloc[1].values.tolist()
+    df = df.iloc[2:]
+    df.columns = columns
     logging.info("Cleaning data for Keep Calm with COVID Dashboard")
     cleanup_keep_calm_with_covid(df)
     logging.info(f"Writing data for Keep Calm with COVID Dashboard to '{output}'")
