@@ -33,9 +33,7 @@ def cleanup(dfs):
         "Contact Source - Program ",  # ending space is needed
         "Needs - Basic Needs Requested",
     ]
-    vialink1_df = dfs["Uncleaned data type 1 VIA LINK"][
-        VIA_LINK_REQUIRED_COLUMNS_DISASTER
-    ]
+    vialink1_df = dfs["VIALINK"][VIA_LINK_REQUIRED_COLUMNS_DISASTER]
 
     # step 2
     # select required columns from 232-Help’s Disaster Form
@@ -53,7 +51,7 @@ def cleanup(dfs):
         "Client Information - Identifies as",
         "Needs - Basic Needs Requested",
     ]
-    two32_help_df = dfs["Uncleaned Data from 232-Help"][TWO32_HELP_REQUIRED_COLUMNS]
+    two32_help_df = dfs["TWO32"][TWO32_HELP_REQUIRED_COLUMNS]
 
     # step 3
     # Create age ranges from date of birth
