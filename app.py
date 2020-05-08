@@ -1,3 +1,13 @@
+import logging
+
+from utils import write_output_file
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+    handlers=[logging.StreamHandler()],
+)
 import os
 from flask import (
     Flask,
@@ -10,8 +20,13 @@ from flask import (
 )
 from werkzeug.utils import secure_filename
 
+from cleanup_keep_calm_with_covid import (
+    cleanup as cleanup_keep_calm_with_covid,
+    CONVERTERS,
+)
+
 UPLOAD_FOLDER = "/tmp/uploads/"
-DOWNLOAD_FOLDER = "tmp/downloads/"
+DOWNLOAD_FOLDER = "/tmp/downloads/"
 ALLOWED_EXTENSIONS = {"csv", "CSV"}
 
 app = Flask(__name__, static_url_path="/public", template_folder="public")
@@ -39,13 +54,31 @@ def index():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
-            process_file(os.path.join(app.config["UPLOAD_FOLDER"], filename), filename)
-            return redirect(url_for("uploaded_file", filename=filename))
+            output_filename = f"{filename.split('.')[0]}.xlsx"
+            process_file(
+                "", os.path.join(app.config["UPLOAD_FOLDER"], filename), output_filename
+            )
+            return redirect(url_for("uploaded_file", filename=output_filename))
     return render_template("index.html")
 
 
-def process_file(input_path, output_filename):
-    print("processing file")
+def process_file(script_name, input_path, output_filename):
+    print(
+        f"processing file from {input_path} and writing to {output_filename} {os.path.join(app.config['DOWNLOAD_FOLDER'], output_filename)}"
+    )
+    # this could be a good use case for the strategy pattern
+    import pandas as pd
+
+    df = pd.read_csv(input_path, encoding="ISO-8859-1", converters=CONVERTERS)
+    columns = df.iloc[1].values.tolist()
+    df = df.iloc[2:]
+    df.columns = columns
+    logging.info("Cleaning data for Keep Calm with COVID Dashboard")
+    cleanup_keep_calm_with_covid(df)
+    logging.info(
+        f"Writing data for Keep Calm with COVID Dashboard to '{output_filename}'"
+    )
+    write_output_file(df, os.path.join(app.config["DOWNLOAD_FOLDER"], output_filename))
 
 
 @app.route("/uploads/<filename>")
