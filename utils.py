@@ -39,6 +39,13 @@ def explode_needs(df, need_column):
     return df
 
 
+def remove_first_rows(df):
+    columns = df.iloc[1].values.tolist()
+    df = df.iloc[2:]
+    df.columns = columns
+    return df
+
+
 replacements = {
     "†": "",
     "Employment": "Employment Services",
