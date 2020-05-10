@@ -27,12 +27,25 @@
           </select>
           <h2>Upload File(s)</h2>
           <div class="form-group">
+            <label for="file1">VIALINK Call report</label>
             <div class="custom-file">
               <input
                 type="file"
                 class="custom-file-input"
-                id="file"
-                name="file"
+                id="file1"
+                name="file1"
+              />
+              <label class="custom-file-label" for="file">Choose file</label>
+            </div>
+          </div>
+          <div id="file2div" class="form-group" style="display:none">
+            <label for="file2">232-HELP Call report</label>
+            <div class="custom-file">
+              <input
+                type="file"
+                class="custom-file-input"
+                id="file2"
+                name="file2"
               />
               <label class="custom-file-label" for="file">Choose file</label>
             </div>
@@ -65,6 +78,15 @@
           files.push($(this)[0].files[i].name);
         }
         $(this).next(".custom-file-label").html(files.join(", "));
+      });
+      $("#script_name").change(function () {
+        var selectedValue = $(this).val();
+        var secondFile = $("#file2div");
+        if (selectedValue == "all_covid") {
+          secondFile.show();
+        } else {
+          secondFile.hide();
+        }
       });
     </script>
   </body>
