@@ -1,0 +1,21 @@
+language: python
+python:
+  - "3.6"      # current default Python on Travis CI
+  - "3.7"
+  - "3.8"
+virtualenv:
+  system_site_packages: true
+# command to install dependencies
+install:
+  - pip install -r requirements.txt
+# command to run tests
+jobs:
+  include:
+    - stage: unit tests
+      script: python -m pytest -v
+    - stage: production code audit
+      script: bandit -c .bandit.yml -r ./cleanup && bandit -c .bandit.yml cleanup.py
+    - stage: test code audit
+      script: bandit -c .bandit.test.yml -r ./tests
+    - stage: lint
+      script: flake8
