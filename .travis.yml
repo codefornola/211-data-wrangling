@@ -18,4 +18,4 @@ jobs:
     - stage: test code audit
       script: bandit -c .bandit.test.yml -r ./tests
     - stage: lint
-      script: flake8
+      script: flake8 
