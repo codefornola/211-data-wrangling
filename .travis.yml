@@ -5,9 +5,11 @@ python:
   - "3.8"
 install:
   - pip install -r requirements.txt
-script: python -m pytest -v --cov
+script: python -m pytest -v
 jobs:
   include:
+    - stage: coverage
+      script: python -m pytest -v --cov=cleanup
     - stage: production code audit
       script: bandit -c .bandit.yml -r ./cleanup && bandit -c .bandit.yml cleanup.py
     - stage: test code audit
