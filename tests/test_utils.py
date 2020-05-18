@@ -11,7 +11,7 @@ def test_write_output_file(df, mocker):
   # mocks & stubs
   mocker.patch.object(pd.DataFrame, 'to_excel')
   mocker.patch('os.makedirs')
-  path_exists_stub = mocker.stub('os.path.exists')
+  path_exists_mock = mocker.patch('os.path.exists')
   # it calls to_excel on the file
   filename = 'nondata/somefile.xlsx'
   write_output_file(df, filename)
@@ -22,14 +22,14 @@ def test_write_output_file(df, mocker):
   os.makedirs.assert_not_called()
   # it doesn't call os.makedirs when prefixed with 'data' & exists
   filename = 'data/somefile.xlsx'
-  path_exists_stub.return_value = True
+  path_exists_mock.return_value = True
   write_output_file(df, filename)
   os.makedirs.assert_not_called()
   # it calls os.makedirs when prefixed with 'data', but doesn't exist
   filename = 'data/somefile.xlsx'
-  path_exists_stub.return_value = False
+  path_exists_mock.return_value = False
   write_output_file(df, filename)
-  os.makedirs.assert_not_called()
+  os.makedirs.assert_called_once_with('data')
 
 
 def test_get_lat():
