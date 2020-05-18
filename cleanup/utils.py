@@ -19,7 +19,7 @@ def get_lat(zipcode):
         return None
     else:
         lat = search.by_zipcode(int(zipcode)).lat
-        return lat if lat else None
+        return lat if lat else None    # why is the if statement here?
 
 
 def get_lng(zipcode):
@@ -27,7 +27,7 @@ def get_lng(zipcode):
         return None
     else:
         lng = search.by_zipcode(int(zipcode)).lng
-        return lng if lng else None
+        return lng if lng else None    # why is the if statement here?
 
 
 def explode_needs(df, need_column):
