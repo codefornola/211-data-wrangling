@@ -1,93 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
+<head>
+    <meta charset="UTF-8"/>
     <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
-
     <title>211 data wrangler</title>
     <link
-      rel="stylesheet"
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-      crossorigin="anonymous"
+            rel="stylesheet"
+            href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+            integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+            crossorigin="anonymous"
     />
-  </head>
-  <body>
-    <div class="container">
-      <div class="col-4">
+</head>
+<body>
+<div class="container">
+    <div class="col-4">
         <h1>211 Data Wrangler</h1>
         <form method="post" enctype="multipart/form-data">
-          <select class="custom-select" id="script_name" name="script_name">
-            <option selected>Choose a script...</option>
-            <option value="all_covid">All COVID</option>
-            <option value="keep_calm_with_covid">Keep Calm with COVID</option>
-          </select>
-          <h2>Upload File(s)</h2>
-          <div class="form-group">
-            <label for="file1">VIALINK Call report</label>
-            <div class="custom-file">
-              <input
-                type="file"
-                class="custom-file-input"
-                id="file1"
-                name="file1"
-              />
-              <label class="custom-file-label" for="file">Choose file</label>
+            <select class="custom-select" id="script_name" name="script_name">
+                <option selected>Choose a script...</option>
+                <option value="all_covid">All COVID</option>
+                <option value="keep_calm_with_covid">Keep Calm with COVID</option>
+            </select>
+            <div id="file_inputs" style="display: none; margin-top: 20px">
+                <h2>Upload File(s)</h2>
+                <div class="form-group">
+                    <label for="vialink_disaster">VIALINK Disaster Call report</label>
+                    <div class="custom-file">
+                        <input
+                                type="file"
+                                class="custom-file-input"
+                                id="vialink_disaster"
+                                name="vialink_disaster"
+                                required
+                        />
+                        <label class="custom-file-label" for="file">Choose file</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label id="file2label" for="file2">VIALINK Call report</label>
+                    <div class="custom-file">
+                        <input
+                                type="file"
+                                class="custom-file-input"
+                                id="file2"
+                                name="file2"
+                                required
+                        />
+                        <label class="custom-file-label" for="file">Choose file</label>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
             </div>
-          </div>
-          <div id="file2div" class="form-group" style="display:none">
-            <label for="file2">232-HELP Call report</label>
-            <div class="custom-file">
-              <input
-                type="file"
-                class="custom-file-input"
-                id="file2"
-                name="file2"
-              />
-              <label class="custom-file-label" for="file">Choose file</label>
-            </div>
-          </div>
-          <button type="submit" class="btn btn-primary">Submit</button>
         </form>
-      </div>
     </div>
+</div>
 
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script
-      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-      crossorigin="anonymous"
-    ></script>
-    <script type="text/javascript">
-      $(".custom-file input").change(function (e) {
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script
+        src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"
+></script>
+<script
+        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"
+></script>
+<script
+        src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"
+></script>
+<script type="text/javascript">
+    $(".custom-file input").change(function (e) {
         var files = [];
         for (var i = 0; i < $(this)[0].files.length; i++) {
-          files.push($(this)[0].files[i].name);
+            files.push($(this)[0].files[i].name);
         }
         $(this).next(".custom-file-label").html(files.join(", "));
-      });
-      $("#script_name").change(function () {
+    });
+    $("#script_name").change(function () {
         var selectedValue = $(this).val();
-        var secondFile = $("#file2div");
+        var secondFile = $("#file2label");
         if (selectedValue == "all_covid") {
-          secondFile.show();
+            secondFile.text("232-HELP Call report");
+            $("#file_inputs").show();
+        } else if (selectedValue == "keep_calm_with_covid") {
+            secondFile.text("VIALINK Call report");
+            $("#file_inputs").show();
         } else {
-          secondFile.hide();
+            $("#file_inputs").hide();
         }
-      });
-    </script>
-  </body>
+    });
+</script>
+</body>
 </html>

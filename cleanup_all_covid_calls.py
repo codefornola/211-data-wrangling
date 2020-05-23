@@ -1,12 +1,14 @@
 import pandas as pd
 import numpy as np
 from datetime import datetime
+
+from constants import VIALINK_REQUIRED_COLUMNS_DISASTER, TWO32_HELP_REQUIRED_COLUMNS, TWO32_HELP_CALLS_KEY, \
+    VIALINK_DISASTER_KEY
 from utils import (
     explode_needs,
     get_lat,
     get_lng,
     replacements,
-    write_output_file,
 )
 
 pd.options.mode.chained_assignment = None
@@ -18,40 +20,11 @@ def cleanup(dfs):
     # step 1
     # select required columns from VIA LINK’s Disaster Form
     # pretty sure the distaster form is "Uncleaned data type 1 VIA LINK"
-    VIA_LINK_REQUIRED_COLUMNS_DISASTER = [
-        "CallReportNum",
-        "ReportVersion",
-        "CallDateAndTimeStart",
-        "CityName",
-        "CountyName",
-        "StateProvince",
-        "PostalCode",
-        "Client Information - Age Group",
-        "Client Information - Call Type",
-        "Client Information - Identifies as",
-        "Concerns/Needs - Concerns/Needs",
-        "Contact Source - Program ",  # ending space is needed
-        "Needs - Basic Needs Requested",
-    ]
-    vialink1_df = dfs["VIALINK"][VIA_LINK_REQUIRED_COLUMNS_DISASTER]
+    vialink1_df = dfs[VIALINK_DISASTER_KEY][VIALINK_REQUIRED_COLUMNS_DISASTER]
 
     # step 2
     # select required columns from 232-Help’s Disaster Form
-    TWO32_HELP_REQUIRED_COLUMNS = [
-        "CallReportNum",
-        "ReportVersion",
-        "CallDateAndTimeStart",
-        "CityName",
-        "CountyName",
-        "StateProvince",
-        "PostalCode",
-        "Client Information - Date of Birth",
-        "Client Information - Call Type",
-        "Call Outcome - What concerns/needs were identified?",
-        "Client Information - Identifies as",
-        "Needs - Basic Needs Requested",
-    ]
-    two32_help_df = dfs["TWO32"][TWO32_HELP_REQUIRED_COLUMNS]
+    two32_help_df = dfs[TWO32_HELP_CALLS_KEY][TWO32_HELP_REQUIRED_COLUMNS]
 
     # step 3
     # Create age ranges from date of birth

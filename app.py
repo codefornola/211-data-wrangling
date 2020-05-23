@@ -1,8 +1,9 @@
+from datetime import date
 import logging
-import os
 
 import pandas as pd
 
+from constants import VIALINK_DISASTER_KEY, VIALINK_CALLS_KEY, TWO32_HELP_CALLS_KEY
 from utils import remove_first_rows, write_output_file
 
 logging.basicConfig(
@@ -14,23 +15,21 @@ logging.basicConfig(
 import os
 from flask import (
     Flask,
-    flash,
     request,
     redirect,
     render_template,
     send_from_directory,
 )
-from werkzeug.utils import secure_filename
 
 from cleanup_keep_calm_with_covid import (
     cleanup as cleanup_keep_calm_with_covid,
-    CONVERTERS,
 )
 from cleanup_all_covid_calls import cleanup as cleanup_all_covid_calls
 
 UPLOADS_DIR = "/tmp/uploads/"
 DOWNLOADS_DIR = "/tmp/downloads/"
 ALLOWED_EXTENSIONS = {"csv"}
+DEFAULT_ENCODING = "ISO-8859-1"
 
 app = Flask(__name__, static_url_path="/public", template_folder="public")
 app.config["UPLOADS_DIR"] = UPLOADS_DIR
@@ -54,54 +53,29 @@ def index():
 
 
 def process_files(script_name, files):
-    # this could be a good use case for the strategy pattern
+    vialink_disaster = files["vialink_disaster"]
+    file2 = files["file2"]
+    if not (is_valid(vialink_disaster) and is_valid(file2)):
+        logging.warning("invalid filename")
+        return redirect(request.url)
+    logging.info(f"Processing {script_name}")
+    output_filename = f"{script_name}_cleaned_{date.today().strftime('%Y%m%d')}.xlsx"
     if script_name == "keep_calm_with_covid":
-        if "file1" not in files:
-            print("did not have required files")
-            return redirect(request.url)
-        file = request.files["file1"]
-        if file.filename == "":
-            return redirect(request.url)
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            uploaded_filename = os.path.join(app.config["UPLOADS_DIR"], filename)
-            file.save(uploaded_filename)
-            output_filename = f"{filename.rsplit('.', 1)[0]}_cleaned.xlsx"
-            download_filename = os.path.join(
-                app.config["DOWNLOADS_DIR"], output_filename
-            )
-            df = pd.read_csv(
-                uploaded_filename, encoding="ISO-8859-1", converters=CONVERTERS
-            )
-            df = remove_first_rows(df)
-            logging.info("Cleaning data for Keep Calm with COVID Dashboard")
-            df = cleanup_keep_calm_with_covid(df)
-            logging.info(
-                f"Writing data for Keep Calm with COVID Dashboard to '{download_filename}'"
-            )
-            write_output_file(df, download_filename)
-            return send_from_directory(
-                app.config["DOWNLOADS_DIR"], output_filename, as_attachment=True
-            )
+        dfs = files_to_dfs(script_name, vialink_disaster, file2)
+        logging.info("Cleaning data for Keep Calm with COVID Dashboard")
+        df = cleanup_keep_calm_with_covid(dfs)
+        download_filename = os.path.join(app.config["DOWNLOADS_DIR"], output_filename)
+        logging.info(
+            f"Writing data for Keep Calm with COVID Dashboard to '{download_filename}'"
+        )
+        write_output_file(df, download_filename)
+        return send_from_directory(
+            app.config["DOWNLOADS_DIR"], output_filename, as_attachment=True
+        )
     if script_name == "all_covid":
-        if "file1" not in files or "file2" not in files:
-            print("did not have required files")
-            return redirect(request.url)
-        file1 = request.files["file1"]
-        file2 = request.files["file2"]
-        if file1.filename == "" or file2.filename == "":
-            print("invalid filename")
-            return redirect(request.url)
-        dfs = {}
-        dfvl = pd.read_csv(file1, encoding="ISO-8859-1")
-        dfvl = remove_first_rows(dfvl)
-        dfs["VIALINK"] = dfvl
-        df232 = pd.read_csv(file2, encoding="ISO-8859-1")
-        df232 = remove_first_rows(df232)
-        dfs["TWO32"] = df232
+        dfs = files_to_dfs(script_name, vialink_disaster, file2)
         logging.info("Cleaning data for All COVID Calls Dashboard")
         df = cleanup_all_covid_calls(dfs)
-        output_filename = f"all_covid_cleaned.xlsx"
         download_filename = os.path.join(app.config["DOWNLOADS_DIR"], output_filename)
         logging.info(
             f"Writing data for All COVID Calls Dashboard to '{download_filename}'"
@@ -110,6 +84,26 @@ def process_files(script_name, files):
         return send_from_directory(
             app.config["DOWNLOADS_DIR"], output_filename, as_attachment=True
         )
+
+
+def files_to_dfs(script_name, vialink_disaster, file2):
+    dfs = {}
+    dfs[VIALINK_DISASTER_KEY] = csv_to_df(vialink_disaster)
+    if script_name == "all_covid":
+        dfs[TWO32_HELP_CALLS_KEY] = csv_to_df(file2)
+    else:
+        dfs[VIALINK_CALLS_KEY] = csv_to_df(file2)
+    return dfs
+
+
+def csv_to_df(file):
+    df = pd.read_csv(file, encoding=DEFAULT_ENCODING)
+    df = remove_first_rows(df)
+    return df
+
+
+def is_valid(file):
+    return file is not None and file.filename != "" and allowed_file(file.filename)
 
 
 if __name__ == "__main__":
