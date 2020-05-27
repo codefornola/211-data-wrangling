@@ -106,10 +106,15 @@ def is_valid(file):
     return file is not None and file.filename != "" and allowed_file(file.filename)
 
 
-if __name__ == "__main__":
+@app.before_first_request
+def create_dirs():
     for directory in [UPLOADS_DIR, DOWNLOADS_DIR]:
         if not os.path.exists(directory):
-            print(f"creating {directory}")
+            logging.info(f"creating {directory}")
             os.makedirs(directory)
+
+
+if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
+    create_dirs()
     app.run(host="0.0.0.0", port=port)
