@@ -60,6 +60,7 @@ replacements = {
     "Legal Consumer": "Legal Assistance",
     "Other - Interpersonal": "Other",
     "Other (PLEASE Specify Caller Need in Call Notes)": "Other",
+    "Other (please specify caller need in call notes)": "Other",
     "other 2-1-1 referral": "Other",
     "Unemployment": "Unemployment Benefits",
 }

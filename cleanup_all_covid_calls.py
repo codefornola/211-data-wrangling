@@ -2,8 +2,12 @@ import pandas as pd
 import numpy as np
 from datetime import datetime
 
-from constants import VIALINK_REQUIRED_COLUMNS_DISASTER, TWO32_HELP_REQUIRED_COLUMNS, TWO32_HELP_CALLS_KEY, \
-    VIALINK_DISASTER_KEY
+from constants import (
+    VIALINK_REQUIRED_COLUMNS_DISASTER,
+    TWO32_HELP_REQUIRED_COLUMNS,
+    TWO32_HELP_CALLS_KEY,
+    VIALINK_DISASTER_KEY,
+)
 from utils import (
     explode_needs,
     get_lat,
@@ -86,6 +90,8 @@ def cleanup(dfs):
     master_df[cn] = master_df[cn].str.strip()
     master_df = master_df[master_df[cn] != "Hangup / Wrong Number"]
     master_df = master_df[master_df[cn] != "Hangup / Wrong #"]
+    master_df = master_df[master_df["Client Information - Call Type"] != "Hangup / Wrong Number"]
+    master_df = master_df[master_df["Client Information - Call Type"] != "Hangup / Wrong #"]
     master_df.replace(to_replace=replacements, value=None, inplace=True)
 
     return master_df
