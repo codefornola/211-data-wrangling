@@ -34,14 +34,16 @@ def cleanup(dfs):
     # Create age ranges from date of birth
     # use ranges 0-5, 6-12, 13-17, 18-24, 25-40, 41-59, 60+.
     now = datetime.now()
-    bins = [0, 5, 12, 17, 24, 40, 59, 150]
-    labels = ["0-5", "6-12", "13-17", "18-24", "24-40", "41-49", "60+"]
+    bins = [0, 5, 13, 18, 25, 41, 60, 150]
+    labels = ["0-5", "6-12", "13-17", "18-24", "25-40", "41-59", "60+"]
     dob = pd.to_datetime(
         two32_help_df["Client Information - Date of Birth"], errors="coerce"
     )
     years_old = (now - dob).astype("timedelta64[Y]")
-    age_range = pd.cut(years_old, bins=bins, labels=labels, include_lowest=True)
-    two32_help_df["Client Information - Age Group"] = age_range
+    age_range = pd.cut(years_old, bins=bins, labels=labels, right=False, include_lowest=True)
+    AGE_RANGE_LEY = "Client Information - Age Group"
+    two32_help_df[AGE_RANGE_LEY] = age_range
+    two32_help_df.loc[two32_help_df[AGE_RANGE_LEY] == "0-5", AGE_RANGE_LEY] = None
     # remove original Date of Birth column
     two32_help_df.drop(columns=["Client Information - Date of Birth"], inplace=True)
 
