@@ -2,8 +2,13 @@ import pandas as pd
 import numpy as np
 from datetime import datetime
 
-from constants import VIALINK_REQUIRED_COLUMNS_CALLS, VIALINK_NEEDS_COLUMNS, VIALINK_REQUIRED_COLUMNS_DISASTER, \
-    VIALINK_CALLS_KEY, VIALINK_DISASTER_KEY
+from constants import (
+    VIALINK_REQUIRED_COLUMNS_CALLS,
+    VIALINK_NEEDS_COLUMNS,
+    VIALINK_REQUIRED_COLUMNS_DISASTER,
+    VIALINK_CALLS_KEY,
+    VIALINK_DISASTER_KEY,
+)
 from utils import explode_needs, get_lat, get_lng, replacements
 
 CONVERTERS = {
@@ -60,6 +65,10 @@ def cleanup(dfs):
 
     # use the same process from the all covid calls dashboard
     df_disaster = dfs[VIALINK_DISASTER_KEY][VIALINK_REQUIRED_COLUMNS_DISASTER]
+    # only include LA Spirit Crisis calls
+    df_disaster = df_disaster[
+        df_disaster["Call Information - Program"] == "LA Spirit Crisis Line"
+    ]
 
     df_disaster["Data From"] = "VIA LINK"
 
