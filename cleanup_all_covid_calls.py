@@ -7,6 +7,7 @@ from constants import (
     TWO32_HELP_REQUIRED_COLUMNS,
     TWO32_HELP_CALLS_KEY,
     VIALINK_DISASTER_KEY,
+    HANGUP_VALUES,
 )
 from utils import (
     explode_needs,
@@ -90,10 +91,12 @@ def cleanup(dfs):
     # step 8
     # cleanup Concerns/Needs
     master_df[cn] = master_df[cn].str.strip()
-    master_df = master_df[master_df[cn] != "Hangup / Wrong Number"]
-    master_df = master_df[master_df[cn] != "Hangup / Wrong #"]
-    master_df = master_df[master_df["Client Information - Call Type"] != "Hangup / Wrong Number"]
-    master_df = master_df[master_df["Client Information - Call Type"] != "Hangup / Wrong #"]
     master_df.replace(to_replace=replacements, value=None, inplace=True)
+
+    # remove hangups
+    master_df = master_df[~master_df[cn].isin(HANGUP_VALUES)]
+    master_df = master_df[~master_df["Client Information - Call Type"].isin(HANGUP_VALUES)]
+    master_df = master_df[~master_df["Client Information - Call Outcome"].isin(HANGUP_VALUES)]
+    master_df = master_df[~master_df["Call Outcome - What was the outcome of this call?"].isin(HANGUP_VALUES)]
 
     return master_df

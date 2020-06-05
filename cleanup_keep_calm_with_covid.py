@@ -8,6 +8,7 @@ from constants import (
     VIALINK_REQUIRED_COLUMNS_DISASTER,
     VIALINK_CALLS_KEY,
     VIALINK_DISASTER_KEY,
+    HANGUP_VALUES,
 )
 from utils import explode_needs, get_lat, get_lng, replacements
 
@@ -55,8 +56,6 @@ def cleanup(dfs):
     # step 5
     # cleanup Concerns/Needs Data
     df[all_needs] = df[all_needs].str.strip()
-    df = df[df[all_needs] != "Wrong #"]
-    df = df[df[all_needs] != "hangup"]
     df.replace(to_replace=replacements, value=None, inplace=True)
 
     # step 6
@@ -67,15 +66,14 @@ def cleanup(dfs):
     df_disaster = dfs[VIALINK_DISASTER_KEY][VIALINK_REQUIRED_COLUMNS_DISASTER]
     # only include LA Spirit Crisis calls
     df_disaster = df_disaster[
-        df_disaster["Call Information - Program"] == "LA Spirit Crisis Line"
+        df_disaster["Contact Source - Program "] == "LA Spirit Crisis Line"
     ]
-
-    df_disaster["Data From"] = "VIA LINK"
-
     # cleanup invalid values
     df_disaster["Contact Source - Program "].replace(
         to_replace=datetime(2001, 2, 1, 0, 0), value=np.nan, inplace=True
     )
+
+    df_disaster["Data From"] = "VIA LINK"
 
     master_df = pd.concat([df, df_disaster], join="outer", ignore_index=True)
 
@@ -94,8 +92,12 @@ def cleanup(dfs):
 
     # cleanup Concerns/Needs
     master_df[cn] = master_df[cn].str.strip()
-    master_df = master_df[master_df[cn] != "Hangup / Wrong Number"]
-    master_df = master_df[master_df[cn] != "Hangup / Wrong #"]
     master_df.replace(to_replace=replacements, value=None, inplace=True)
+
+    # remove hangups
+    master_df = master_df[~master_df[cn].isin(HANGUP_VALUES)]
+    master_df = master_df[~master_df["Call Information - Counseling agency MHC BHC etc. "].isin(HANGUP_VALUES)]
+    master_df = master_df[~master_df["Call Information - Mental Health Region"].isin(HANGUP_VALUES)]
+    master_df = master_df[~master_df["Call Information - Contact Type"].isin(HANGUP_VALUES)]
 
     return master_df
