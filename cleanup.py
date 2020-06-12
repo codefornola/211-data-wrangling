@@ -17,7 +17,7 @@ from cleanup_keep_calm_with_covid import (
     CONVERTERS,
     cleanup as cleanup_keep_calm_with_covid,
 )
-from utils import write_output_file
+from utils import remove_first_rows, write_output_file
 
 
 @click.group()
@@ -87,13 +87,6 @@ def keep_calm_with_covid(ctx, infile, output):
     cleanup_keep_calm_with_covid(df)
     logging.info(f"Writing data for Keep Calm with COVID Dashboard to '{output}'")
     write_output_file(df, output)
-
-
-def remove_first_rows(df):
-    columns = df.iloc[1].values.tolist()
-    df = df.iloc[2:]
-    df.columns = columns
-    return df
 
 
 if __name__ == "__main__":

@@ -1,12 +1,19 @@
 import pandas as pd
 import numpy as np
 from datetime import datetime
+
+from constants import (
+    VIALINK_REQUIRED_COLUMNS_DISASTER,
+    TWO32_HELP_REQUIRED_COLUMNS,
+    TWO32_HELP_CALLS_KEY,
+    VIALINK_DISASTER_KEY,
+    HANGUP_VALUES,
+)
 from utils import (
     explode_needs,
     get_lat,
     get_lng,
     replacements,
-    write_output_file,
 )
 
 pd.options.mode.chained_assignment = None
@@ -18,53 +25,26 @@ def cleanup(dfs):
     # step 1
     # select required columns from VIA LINK’s Disaster Form
     # pretty sure the distaster form is "Uncleaned data type 1 VIA LINK"
-    VIA_LINK_REQUIRED_COLUMNS_DISASTER = [
-        "CallReportNum",
-        "ReportVersion",
-        "CallDateAndTimeStart",
-        "CityName",
-        "CountyName",
-        "StateProvince",
-        "PostalCode",
-        "Client Information - Age Group",
-        "Client Information - Call Type",
-        "Client Information - Identifies as",
-        "Concerns/Needs - Concerns/Needs",
-        "Contact Source - Program ",  # ending space is needed
-        "Needs - Basic Needs Requested",
-    ]
-    vialink1_df = dfs["VIALINK"][VIA_LINK_REQUIRED_COLUMNS_DISASTER]
+    vialink1_df = dfs[VIALINK_DISASTER_KEY][VIALINK_REQUIRED_COLUMNS_DISASTER]
 
     # step 2
     # select required columns from 232-Help’s Disaster Form
-    TWO32_HELP_REQUIRED_COLUMNS = [
-        "CallReportNum",
-        "ReportVersion",
-        "CallDateAndTimeStart",
-        "CityName",
-        "CountyName",
-        "StateProvince",
-        "PostalCode",
-        "Client Information - Date of Birth",
-        "Client Information - Call Type",
-        "Call Outcome - What concerns/needs were identified?",
-        "Client Information - Identifies as",
-        "Needs - Basic Needs Requested",
-    ]
-    two32_help_df = dfs["TWO32"][TWO32_HELP_REQUIRED_COLUMNS]
+    two32_help_df = dfs[TWO32_HELP_CALLS_KEY][TWO32_HELP_REQUIRED_COLUMNS]
 
     # step 3
     # Create age ranges from date of birth
     # use ranges 0-5, 6-12, 13-17, 18-24, 25-40, 41-59, 60+.
     now = datetime.now()
-    bins = [0, 5, 12, 17, 24, 40, 59, 150]
-    labels = ["0-5", "6-12", "13-17", "18-24", "24-40", "41-49", "60+"]
+    bins = [0, 5, 13, 18, 25, 41, 60, 150]
+    labels = ["0-5", "6-12", "13-17", "18-24", "25-40", "41-59", "60+"]
     dob = pd.to_datetime(
         two32_help_df["Client Information - Date of Birth"], errors="coerce"
     )
     years_old = (now - dob).astype("timedelta64[Y]")
-    age_range = pd.cut(years_old, bins=bins, labels=labels, include_lowest=True)
-    two32_help_df["Client Information - Age Group"] = age_range
+    age_range = pd.cut(years_old, bins=bins, labels=labels, right=False, include_lowest=True)
+    AGE_RANGE_LEY = "Client Information - Age Group"
+    two32_help_df[AGE_RANGE_LEY] = age_range
+    two32_help_df.loc[two32_help_df[AGE_RANGE_LEY] == "0-5", AGE_RANGE_LEY] = None
     # remove original Date of Birth column
     two32_help_df.drop(columns=["Client Information - Date of Birth"], inplace=True)
 
@@ -111,8 +91,12 @@ def cleanup(dfs):
     # step 8
     # cleanup Concerns/Needs
     master_df[cn] = master_df[cn].str.strip()
-    master_df = master_df[master_df[cn] != "Hangup / Wrong Number"]
-    master_df = master_df[master_df[cn] != "Hangup / Wrong #"]
     master_df.replace(to_replace=replacements, value=None, inplace=True)
+
+    # remove hangups
+    master_df = master_df[~master_df[cn].isin(HANGUP_VALUES)]
+    master_df = master_df[~master_df["Client Information - Call Type"].isin(HANGUP_VALUES)]
+    master_df = master_df[~master_df["Client Information - Call Outcome"].isin(HANGUP_VALUES)]
+    master_df = master_df[~master_df["Call Outcome - What was the outcome of this call?"].isin(HANGUP_VALUES)]
 
     return master_df
