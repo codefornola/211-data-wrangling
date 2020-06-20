@@ -36,8 +36,8 @@ app.config["UPLOADS_DIR"] = UPLOADS_DIR
 app.config["DOWNLOADS_DIR"] = DOWNLOADS_DIR
 
 # https://flask.palletsprojects.com/en/1.1.x/patterns/fileuploads/#improving-uploads
-# limit upload size upto 10MB
-app.config["MAX_CONTENT_LENGTH"] = 10 * 1024 * 1024
+# limit upload size upto 50MB
+app.config["MAX_CONTENT_LENGTH"] = 50 * 1024 * 1024
 
 
 def allowed_file(filename):
