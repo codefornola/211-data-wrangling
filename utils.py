@@ -32,7 +32,7 @@ def get_lng(zipcode):
 
 def explode_needs(df, need_column):
     logging.debug(f"exploding needs into {need_column}")
-    df["tmp_needs"] = df[need_column].str.split(";")
+    df["tmp_needs"] = df[need_column].astype(str).str.split(";")
     df = df.explode("tmp_needs")
     df.drop(columns=[need_column], inplace=True)
     df.rename(columns={"tmp_needs": need_column}, inplace=True)
