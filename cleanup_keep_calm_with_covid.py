@@ -41,7 +41,7 @@ def cleanup(dfs):
 
     # step 2
     # remove calls not from LA Spirit line
-    df = df[df["Call Information - Program"] == "LA Spirit Crisis Line"]
+    df = df[df["Call Information - Program"].str.contains("LA Spirit")]
 
     # step 3
     # combine all needs column into 1 column
@@ -66,7 +66,7 @@ def cleanup(dfs):
     df_disaster = dfs[VIALINK_DISASTER_KEY][VIALINK_REQUIRED_COLUMNS_DISASTER]
     # only include LA Spirit Crisis calls
     df_disaster = df_disaster[
-        df_disaster["Contact Source - Program "] == "LA Spirit Crisis Line"
+        df_disaster["Contact Source - Program "].str.contains("LA Spirit")
     ]
     # cleanup invalid values
     df_disaster["Contact Source - Program "].replace(
